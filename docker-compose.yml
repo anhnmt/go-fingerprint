@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  go-fingerprint:
+    container_name: go-fingerprint
+    image: anhnmt/go-fingerprint:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - base-project
+    ports:
+      - "8080:8080"
+    restart: "always"
+
+networks:
+  base-project:
+    external: true

@@ -47,6 +47,8 @@ func main() {
 		slog.Info("Fingerprint",
 			slog.String("id", fg.ID()),
 			slog.String("data", string(marshal)),
+			slog.Any("headers", r.Header),
+			slog.Any("remote-addr", r.RemoteAddr),
 		)
 
 		w.Header().Set("Content-Type", "application/json")

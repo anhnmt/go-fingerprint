@@ -31,20 +31,25 @@ func ParseUserAgent(userAgent string) *FpUserAgent {
 	}
 
 	parse := useragent.Parse(userAgent)
-
 	ua := &FpUserAgent{
-		Browser: &Browser{
-			Name:    parse.Name,
-			Version: parse.Version,
-		},
-		OS: &OS{
-			Name:    parse.OS,
-			Version: parse.OSVersion,
-		},
 		Device: &Device{
 			Name: parse.Device,
 			Type: deviceType(parse),
 		},
+	}
+
+	if parse.Name != "" {
+		ua.Browser = &Browser{
+			Name:    parse.Name,
+			Version: parse.Version,
+		}
+	}
+
+	if parse.OS != "" {
+		ua.OS = &OS{
+			Name:    parse.OS,
+			Version: parse.OSVersion,
+		}
 	}
 
 	return ua

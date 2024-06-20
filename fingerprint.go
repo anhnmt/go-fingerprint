@@ -13,6 +13,7 @@ type Fingerprint struct {
 	hashFunc HashFunc
 
 	IpAddress *FpIpAddress `json:"ip_address,omitempty"`
+	UserAgent *FpUserAgent `json:"user_agent,omitempty"`
 }
 
 func NewFingerprint(r *http.Request) *Fingerprint {
@@ -22,6 +23,7 @@ func NewFingerprint(r *http.Request) *Fingerprint {
 			return murmur.HashBytes(data).String()
 		},
 		IpAddress: ParseIpAddress(r),
+		UserAgent: ParseUserAgent(r.UserAgent()),
 	}
 
 	return fingerprint

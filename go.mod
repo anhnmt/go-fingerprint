@@ -4,6 +4,7 @@ go 1.22
 
 require (
 	github.com/bytedance/sonic v1.11.9
+	github.com/mileusna/useragent v1.3.4
 	github.com/yihleego/murmurhash3 v0.0.0-20220914065222-8cd2aa986a9d
 )
 

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -35,7 +35,6 @@ func main() {
 
 		slog.Info("Fingerprint",
 			slog.String("id", fg.ID()),
-			slog.Any("headers", r.Header),
 			slog.String("data", string(marshal)),
 		)
 
@@ -44,7 +43,7 @@ func main() {
 	})
 
 	addr := ":8080"
-	log.Printf("Listening on http://localhost%s\n", addr)
+	slog.Info(fmt.Sprintf("Listening on http://localhost%s", addr))
 
 	err := http.ListenAndServe(addr, mux)
 	if err != nil {

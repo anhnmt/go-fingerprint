@@ -7,10 +7,16 @@ import (
 	"os"
 	"time"
 
+	"github.com/bytedance/sonic"
 	"github.com/lmittmann/tint"
 
 	"github.com/anhnmt/go-fingerprint"
 )
+
+type Fingerprint struct {
+	ID string `json:"id,omitempty"`
+	*fingerprint.Fingerprint
+}
 
 func init() {
 	// set global logger with custom options
@@ -28,7 +34,12 @@ func main() {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fg := fingerprint.NewFingerprint(r)
 
-		marshal, err := fg.Bytes()
+		newFingerprint := &Fingerprint{
+			ID:          fg.ID(),
+			Fingerprint: fg,
+		}
+
+		marshal, err := sonic.Marshal(newFingerprint)
 		if err != nil {
 			return
 		}
@@ -47,6 +58,6 @@ func main() {
 
 	err := http.ListenAndServe(addr, mux)
 	if err != nil {
-		return
+		slog.Error(fmt.Sprintf("Error: %s", err.Error()))
 	}
 }

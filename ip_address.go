@@ -7,13 +7,13 @@ import (
 )
 
 const (
-	XClientIp        = "X-Client-Ip"
-	XForwardedFor    = "X-Forwarded-For"
-	CFConnectingIp   = "CF-Connecting-Ip"
-	FastlyClientIp   = "Fastly-Client-Ip"
-	TrueClientIp     = "True-Client-Ip"
-	XRealIp          = "X-Real-Ip"
-	XClusterClientIp = "X-Cluster-Client-Ip"
+	XClientIp        = "X-Client-Ip"         // Standard headers used by Amazon EC2, Heroku, and others.
+	XForwardedFor    = "X-Forwarded-For"     // Load-balancers (AWS ELB) or proxies.
+	CFConnectingIp   = "CF-Connecting-Ip"    // @see https://support.cloudflare.com/hc/en-us/articles/200170986-How-does-Cloudflare-handle-HTTP-Request-headers-
+	FastlyClientIp   = "Fastly-Client-Ip"    // Fastly and Firebase hosting header (When forwarded to cloud function)
+	TrueClientIp     = "True-Client-Ip"      // Akamai and Cloudflare: True-Client-IP.
+	XRealIp          = "X-Real-Ip"           // Default nginx proxy/fcgi; alternative to x-forwarded-for, used by some proxies.
+	XClusterClientIp = "X-Cluster-Client-Ip" // (Rackspace LB and Riverbed's Stingray) http://www.rackspace.com/knowledge_center/article/controlling-access-to-linux-cloud-sites-based-on-the-client-ip-address
 	XForwarded       = "X-Forwarded"
 	ForwardedFor     = "Forwarded-For"
 	Forwarded        = "Forwarded"

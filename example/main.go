@@ -35,7 +35,7 @@ func main() {
 
 		slog.Info("Fingerprint",
 			slog.Any("headers", r.Header),
-			slog.Any("data", marshal),
+			slog.String("data", string(marshal)),
 		)
 
 		w.Header().Set("Content-Type", "application/json")

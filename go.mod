@@ -2,7 +2,10 @@ module github.com/anhnmt/go-fingerprint
 
 go 1.22
 
-require github.com/bytedance/sonic v1.11.9
+require (
+	github.com/bytedance/sonic v1.11.9
+	github.com/yihleego/murmurhash3 v0.0.0-20220914065222-8cd2aa986a9d
+)
 
 require (
 	github.com/bytedance/sonic/loader v0.1.1 // indirect

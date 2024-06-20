@@ -34,6 +34,7 @@ func main() {
 		}
 
 		slog.Info("Fingerprint",
+			slog.String("id", fg.ID()),
 			slog.Any("headers", r.Header),
 			slog.String("data", string(marshal)),
 		)

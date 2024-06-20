@@ -2,10 +2,25 @@ package main
 
 import (
 	"log"
+	"log/slog"
 	"net/http"
+	"os"
+	"time"
+
+	"github.com/lmittmann/tint"
 
 	"github.com/anhnmt/go-fingerprint"
 )
+
+func init() {
+	// set global logger with custom options
+	slog.SetDefault(slog.New(
+		tint.NewHandler(os.Stderr, &tint.Options{
+			TimeFormat: time.RFC3339,
+			AddSource:  true,
+		}),
+	))
+}
 
 func main() {
 	mux := http.NewServeMux()

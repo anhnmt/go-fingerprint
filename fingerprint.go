@@ -1,8 +1,7 @@
 package fingerprint
 
 import (
-	"fmt"
-	"log"
+	"log/slog"
 	"net"
 	"net/http"
 
@@ -10,26 +9,41 @@ import (
 )
 
 type Fingerprint struct {
+	ID        string `json:"id"`
+	IpAddress string `json:"ip_address"`
+	UserAgent string `json:"user_agent"`
 }
 
 func NewFingerprint(r *http.Request) *Fingerprint {
-	log.Printf("headers: %v\n\n", r.Header)
+	args := []any{
+		slog.Any("headers", r.Header),
+	}
 
 	ip, _, err := net.SplitHostPort(r.RemoteAddr)
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("ip: %v\n\n", ip)
-	log.Printf("======================================\n\n")
+
+	args = append(args, slog.Any("ip", ip))
+	slog.Info("Fingerprint", args...)
 
 	return &Fingerprint{}
 }
 
-func (f *Fingerprint) JSON() (string, error) {
-	json, err := sonic.Marshal(f)
+func (f *Fingerprint) Byte() ([]byte, error) {
+	bytes, err := sonic.Marshal(f)
 	if err != nil {
-		return "", fmt.Errorf("parse json failed: %v\n", err)
+		return nil, err
 	}
 
-	return string(json), nil
+	return bytes, nil
+}
+
+func (f *Fingerprint) String() (string, error) {
+	bytes, err := f.Byte()
+	if err != nil {
+		return "", err
+	}
+
+	return string(bytes), nil
 }

@@ -38,6 +38,7 @@ func main() {
 			slog.Any("data", marshal),
 		)
 
+		w.Header().Set("Content-Type", "application/json")
 		w.Write(marshal)
 	})
 

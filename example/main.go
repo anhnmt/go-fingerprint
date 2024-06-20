@@ -26,9 +26,19 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fingerprint.NewFingerprint(r)
+		fg := fingerprint.NewFingerprint(r)
 
-		w.Write([]byte("Hello World"))
+		marshal, err := fg.Bytes()
+		if err != nil {
+			return
+		}
+
+		slog.Info("Fingerprint",
+			slog.Any("headers", r.Header),
+			slog.Any("data", marshal),
+		)
+
+		w.Write(marshal)
 	})
 
 	addr := ":8080"

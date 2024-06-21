@@ -12,6 +12,7 @@ type HashFunc func(data []byte) string
 type Fingerprint struct {
 	hashFunc HashFunc
 
+	ID        string       `json:"id,omitempty"`
 	IpAddress *FpIpAddress `json:"ip_address,omitempty"`
 	UserAgent *FpUserAgent `json:"user_agent,omitempty"`
 }
@@ -26,10 +27,11 @@ func NewFingerprint(r *http.Request) *Fingerprint {
 		UserAgent: ParseUserAgent(r.UserAgent()),
 	}
 
+	fingerprint.ID = fingerprint.GetID()
 	return fingerprint
 }
 
-func (f *Fingerprint) ID() string {
+func (f *Fingerprint) GetID() string {
 	data, err := f.Bytes()
 	if len(data) == 0 || err != nil {
 		return ""

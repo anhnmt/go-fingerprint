@@ -1,9 +1,13 @@
 package fingerprint
 
 import (
+	"context"
 	"net"
 	"net/http"
 	"strings"
+
+	"github.com/grpc-ecosystem/go-grpc-middleware/v2/metadata"
+	"google.golang.org/grpc/peer"
 )
 
 const (
@@ -69,6 +73,48 @@ func GetClientIp(r *http.Request) string {
 	host, _, err := net.SplitHostPort(r.RemoteAddr)
 	if err == nil && isCorrectIP(host) {
 		return host
+	}
+
+	return ""
+}
+
+func ParseIpAddressContext(ctx context.Context) *FpIpAddress {
+	clientIp := GetClientIpContext(ctx)
+	if clientIp == "" {
+		return nil
+	}
+
+	return &FpIpAddress{
+		Value: clientIp,
+	}
+}
+
+func GetClientIpContext(ctx context.Context) string {
+	md := metadata.ExtractIncoming(ctx)
+
+	if len(md) > 0 {
+		for _, header := range requestHeaders {
+			switch header {
+			case XForwardedFor: // Load-balancers (AWS ELB) or proxies.
+				host, correctIP := getClientIPFromXForwardedFor(md.Get(header))
+				if correctIP {
+					return host
+				}
+			default:
+				if host := md.Get(header); isCorrectIP(host) {
+					return host
+				}
+			}
+		}
+	}
+
+	// remote address checks.
+	peer, ok := peer.FromContext(ctx)
+	if ok && peer.Addr != nil {
+		host, _, err := net.SplitHostPort(peer.Addr.String())
+		if err == nil && isCorrectIP(host) {
+			return host
+		}
 	}
 
 	return ""

@@ -1,9 +1,11 @@
 package fingerprint
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/bytedance/sonic"
+	"github.com/grpc-ecosystem/go-grpc-middleware/v2/metadata"
 	murmur3 "github.com/yihleego/murmurhash3"
 )
 
@@ -25,6 +27,20 @@ func NewFingerprint(r *http.Request) *Fingerprint {
 		},
 		IpAddress: ParseIpAddress(r),
 		UserAgent: ParseUserAgent(r.UserAgent()),
+	}
+
+	fingerprint.ID = fingerprint.GetID()
+	return fingerprint
+}
+
+func NewFingerprintContext(ctx context.Context) *Fingerprint {
+	fingerprint := &Fingerprint{
+		hashFunc: func(data []byte) string {
+			murmur := murmur3.New128()
+			return murmur.HashBytes(data).String()
+		},
+		IpAddress: ParseIpAddressContext(ctx),
+		UserAgent: ParseUserAgent(metadata.ExtractIncoming(ctx).Get("user-agent")),
 	}
 
 	fingerprint.ID = fingerprint.GetID()

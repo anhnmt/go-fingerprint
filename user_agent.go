@@ -5,6 +5,7 @@ import (
 )
 
 type FpUserAgent struct {
+	Raw     string   `json:"raw,omitempty"`
 	Browser *Browser `json:"browser,omitempty"`
 	OS      *OS      `json:"os,omitempty"`
 	Device  *Device  `json:"device,omitempty"`
@@ -32,6 +33,7 @@ func ParseUserAgent(userAgent string) *FpUserAgent {
 
 	parse := useragent.Parse(userAgent)
 	ua := &FpUserAgent{
+		Raw: userAgent,
 		Device: &Device{
 			Name: parse.Device,
 			Type: deviceType(parse),

@@ -85,7 +85,7 @@ func ParseIpAddressContext(ctx context.Context) *FpIpAddress {
 	}
 
 	return &FpIpAddress{
-		Value: clientIp,
+		Value: convertLocalhostIP(clientIp),
 	}
 }
 
@@ -146,4 +146,12 @@ func getClientIPFromXForwardedFor(headers string) (string, bool) {
 // isCorrectIP - return true if ip string is valid textual representation of an IP address, else returns false
 func isCorrectIP(ip string) bool {
 	return net.ParseIP(ip) != nil
+}
+
+func convertLocalhostIP(ip string) string {
+	if ip == "127.0.0.1" || ip == "localhost" {
+		return "::1"
+	}
+
+	return ip
 }
